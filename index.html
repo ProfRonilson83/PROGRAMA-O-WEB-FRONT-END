@@ -1,1 +1,801 @@
 
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Avaliação - Professor Ronilson Silva</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #111;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* =========================
+           TELA INICIAL
+        ========================= */
+
+        #inicio {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #111, #222);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 650px;
+            background: #fff;
+            color: #222;
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,.5);
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .professor {
+            color: #31b279;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .aviso {
+            background: #fff3cd;
+            border: 1px solid #ffe69c;
+            color: #664d03;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .regras {
+            text-align: left;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .regras li {
+            margin-left: 25px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        #btnIniciar {
+            background: #31b279;
+            color: white;
+            width: 100%;
+        }
+
+        #btnIniciar:hover {
+            background: #279565;
+            transform: scale(1.02);
+        }
+
+        /* =========================
+           ÁREA DA AVALIAÇÃO
+        ========================= */
+
+        #avaliacao {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #f2f2f2;
+        }
+
+        .topo {
+            height: 65px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .titulo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #31b279;
+        }
+
+        #cronometro {
+            background: #31b279;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        #btnTelaCheia {
+            background: #444;
+            color: white;
+            padding: 10px 15px;
+        }
+
+        #btnFinalizar {
+            background: #c62828;
+            color: white;
+            padding: 10px 15px;
+        }
+
+        .controles {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 65px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        #modalSaida {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            color: #222;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,.5);
+        }
+
+        .icone {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .modal h2 {
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .botoes-modal {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        #continuar {
+            background: #31b279;
+            color: white;
+        }
+
+        #sair {
+            background: #c62828;
+            color: white;
+        }
+
+        /* =========================
+           TELA FINAL
+        ========================= */
+
+        #finalizado {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #111;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 5000;
+        }
+
+        .final-card {
+            background: white;
+            color: #222;
+            padding: 40px;
+            border-radius: 18px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .final-card h1 {
+            color: #31b279;
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+           RESPONSIVO
+        ========================= */
+
+        @media(max-width: 700px) {
+
+            .topo {
+                height: 110px;
+                flex-wrap: wrap;
+                padding: 10px;
+            }
+
+            .titulo {
+                width: 100%;
+                text-align: center;
+            }
+
+            .controles {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-container {
+                top: 110px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .botoes-modal {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =====================================
+     TELA INICIAL
+===================================== -->
+
+<section id="inicio">
+
+    <div class="card">
+
+        <div class="icone">📝</div>
+
+        <h1>Avaliação Acadêmica</h1>
+
+        <div class="professor">
+            Professor Ronilson Silva
+        </div>
+
+        <div class="aviso">
+
+            <strong>⚠️ ATENÇÃO</strong><br><br>
+
+            Após iniciar a avaliação, evite sair desta página,
+            trocar de aba ou fechar o navegador.
+
+            <br><br>
+
+            Caso tente sair, será apresentada uma confirmação.
+
+        </div>
+
+        <div class="regras">
+
+            <strong>Orientações:</strong>
+
+            <ul>
+                <li>Leia atentamente cada questão.</li>
+                <li>Responda todas as questões.</li>
+                <li>Não feche a página durante a avaliação.</li>
+                <li>Não utilize o botão voltar do navegador.</li>
+                <li>Ao terminar, clique em <strong>Finalizar Avaliação</strong>.</li>
+            </ul>
+
+        </div>
+
+        <button id="btnIniciar">
+            ▶ INICIAR AVALIAÇÃO
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================
+     AVALIAÇÃO
+===================================== -->
+
+<section id="avaliacao">
+
+    <header class="topo">
+
+        <div class="titulo">
+            📚 Avaliação — Ronilson Silva
+        </div>
+
+        <div class="controles">
+
+            <div id="cronometro">
+                ⏱ 60:00
+            </div>
+
+            <button id="btnTelaCheia">
+                ⛶ Tela cheia
+            </button>
+
+            <button id="btnFinalizar">
+                ✓ Finalizar
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div class="form-container">
+
+        <iframe
+            id="googleForm"
+            src=""
+            allow="fullscreen">
+        </iframe>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================
+     MODAL DE SAÍDA
+===================================== -->
+
+<div id="modalSaida">
+
+    <div class="modal">
+
+        <div class="icone">
+            ⚠️
+        </div>
+
+        <h2>Deseja sair da avaliação?</h2>
+
+        <p>
+
+            <strong>Atenção!</strong>
+
+            <br><br>
+
+            Se você sair desta avaliação,
+            ela poderá ser considerada encerrada.
+
+            <br><br>
+
+            Tem certeza que deseja sair?
+
+        </p>
+
+        <div class="botoes-modal">
+
+            <button id="continuar">
+                NÃO, CONTINUAR
+            </button>
+
+            <button id="sair">
+                SIM, SAIR
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     TELA FINAL
+===================================== -->
+
+<section id="finalizado">
+
+    <div class="final-card">
+
+        <div class="icone">
+            ✅
+        </div>
+
+        <h1>Avaliação encerrada</h1>
+
+        <p>
+            A avaliação foi encerrada.
+        </p>
+
+        <br>
+
+        <p>
+            Caso tenha finalizado por engano,
+            procure o professor responsável.
+        </p>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    /* =====================================
+       CONFIGURAÇÕES
+    ===================================== */
+
+    const LINK_FORMS =
+    "https://docs.google.com/forms/d/e/1FAIpQLScW2hSqMxlBGhwbL3g2BQIsF_o7uctwJ8QIFdZhfkQyGwnmpw/viewform?embedded=true";
+
+    // TEMPO DA AVALIAÇÃO
+    // 60 minutos
+    let tempo = 60 * 60;
+
+    let avaliacaoIniciada = false;
+
+    let permitirSaida = false;
+
+    let cronometro;
+
+
+    /* =====================================
+       ELEMENTOS
+    ===================================== */
+
+    const inicio =
+        document.getElementById("inicio");
+
+    const avaliacao =
+        document.getElementById("avaliacao");
+
+    const googleForm =
+        document.getElementById("googleForm");
+
+    const modalSaida =
+        document.getElementById("modalSaida");
+
+    const finalizado =
+        document.getElementById("finalizado");
+
+    const cronometroElemento =
+        document.getElementById("cronometro");
+
+
+    /* =====================================
+       INICIAR AVALIAÇÃO
+    ===================================== */
+
+    document
+    .getElementById("btnIniciar")
+    .addEventListener("click", iniciarAvaliacao);
+
+
+    function iniciarAvaliacao() {
+
+        avaliacaoIniciada = true;
+
+        inicio.style.display = "none";
+
+        avaliacao.style.display = "block";
+
+        googleForm.src = LINK_FORMS;
+
+        iniciarCronometro();
+
+        entrarTelaCheia();
+
+    }
+
+
+    /* =====================================
+       CRONÔMETRO
+    ===================================== */
+
+    function iniciarCronometro() {
+
+        atualizarCronometro();
+
+        cronometro = setInterval(() => {
+
+            tempo--;
+
+            atualizarCronometro();
+
+            if (tempo <= 0) {
+
+                clearInterval(cronometro);
+
+                finalizarAvaliacao();
+
+            }
+
+        }, 1000);
+
+    }
+
+
+    function atualizarCronometro() {
+
+        let minutos =
+            Math.floor(tempo / 60);
+
+        let segundos =
+            tempo % 60;
+
+        minutos =
+            String(minutos).padStart(2, "0");
+
+        segundos =
+            String(segundos).padStart(2, "0");
+
+        cronometroElemento.innerHTML =
+            "⏱ " + minutos + ":" + segundos;
+
+    }
+
+
+    /* =====================================
+       TELA CHEIA
+    ===================================== */
+
+    document
+    .getElementById("btnTelaCheia")
+    .addEventListener("click", entrarTelaCheia);
+
+
+    function entrarTelaCheia() {
+
+        if (document.documentElement.requestFullscreen) {
+
+            document.documentElement
+            .requestFullscreen()
+            .catch(() => {});
+
+        }
+
+    }
+
+
+    /* =====================================
+       DETECTAR SAÍDA DA PÁGINA
+    ===================================== */
+
+    document.addEventListener(
+        "visibilitychange",
+        function() {
+
+            if (
+                avaliacaoIniciada &&
+                document.hidden &&
+                !permitirSaida
+            ) {
+
+                mostrarModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       BOTÃO VOLTAR
+    ===================================== */
+
+    history.pushState(null, null, location.href);
+
+    window.addEventListener(
+        "popstate",
+        function() {
+
+            if (avaliacaoIniciada) {
+
+                history.pushState(
+                    null,
+                    null,
+                    location.href
+                );
+
+                mostrarModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       FECHAR / RECARREGAR
+    ===================================== */
+
+    window.addEventListener(
+        "beforeunload",
+        function(event) {
+
+            if (
+                avaliacaoIniciada &&
+                !permitirSaida
+            ) {
+
+                event.preventDefault();
+
+                event.returnValue = "";
+
+                return "";
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       MODAL
+    ===================================== */
+
+    function mostrarModal() {
+
+        modalSaida.style.display = "flex";
+
+    }
+
+
+    document
+    .getElementById("continuar")
+    .addEventListener(
+        "click",
+        function() {
+
+            modalSaida.style.display = "none";
+
+            entrarTelaCheia();
+
+        }
+    );
+
+
+    /* =====================================
+       SAIR
+    ===================================== */
+
+    document
+    .getElementById("sair")
+    .addEventListener(
+        "click",
+        function() {
+
+            permitirSaida = true;
+
+            avaliacaoIniciada = false;
+
+            clearInterval(cronometro);
+
+            modalSaida.style.display = "none";
+
+            avaliacao.style.display = "none";
+
+            finalizado.style.display = "flex";
+
+            if (
+                document.fullscreenElement
+            ) {
+
+                document
+                .exitFullscreen()
+                .catch(() => {});
+
+            }
+
+        }
+    );
+
+
+    /* =====================================
+       FINALIZAR
+    ===================================== */
+
+    document
+    .getElementById("btnFinalizar")
+    .addEventListener(
+        "click",
+        function() {
+
+            const confirmar =
+                confirm(
+                    "Você tem certeza que deseja finalizar a avaliação?"
+                );
+
+            if (confirmar) {
+
+                finalizarAvaliacao();
+
+            }
+
+        }
+    );
+
+
+    function finalizarAvaliacao() {
+
+        permitirSaida = true;
+
+        avaliacaoIniciada = false;
+
+        clearInterval(cronometro);
+
+        avaliacao.style.display = "none";
+
+        finalizado.style.display = "flex";
+
+        if (
+            document.fullscreenElement
+        ) {
+
+            document
+            .exitFullscreen()
+            .catch(() => {});
+
+        }
+
+    }
+
+
+</script>
+
+</body>
+</html>
+```
